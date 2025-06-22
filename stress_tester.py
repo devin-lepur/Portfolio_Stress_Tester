@@ -29,7 +29,7 @@ if ticker_input.strip():
         try:
             data = yf.Ticker(ticker_symbol).history(period="1d", interval="1m")
             if data.empty:
-                raise ValueError("No data found.")
+                st.warning(f"Unable to fetch data from Yahoo Finance for {ticker_symbol}.")
             
             # Get total value of shares for last market close
             current_price = data['Close'].iloc[-1]
