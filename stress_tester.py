@@ -1,3 +1,11 @@
+'''
+File: stess_tester.py
+Purpose: Source for steamlit web app meant to test stock portfolio resiliency
+Author: Devin Lepur
+Date: June 21, 2025
+'''
+
+
 import streamlit as st
 import pandas as pd
 import yfinance as yf
