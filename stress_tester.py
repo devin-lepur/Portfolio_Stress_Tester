@@ -9,12 +9,11 @@ Date: June 21, 2025
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-import numpy as np
 
 st.title("Stock Portfolio Stress Tester")
 
 # Allow user to enter stock
-ticker_input = st.text_input("Enter the tickers of your holdings a list. Example: \"TSLA,AAPL,MSFT\"", key="ticker")
+ticker_input = st.text_input("Enter the tickers of your holdings a list. Example: \"TSLA, AAPL, MSFT\"", key="ticker")
 
 # TODO: Allow user to upload downloaded holdings from brokerage
 
@@ -61,8 +60,11 @@ if ticker_input.strip():
 
     # Dynamic line graph of portfolio value over time
     st.markdown("## Portfolio value over time")
-    # Drop down for time frame
-    graph_time_period = st.selectbox("Select time frame", options = ["1mo", "6mo", "1y", "5y", "10y", "100y"], index=2)
+
+    # Drop down for time frame, 1 year default selection
+    graph_time_period = st.selectbox("Select time frame", options = ["1mo", "6mo", "1y", "5y", "10y", "Max"], index=2)
+    if graph_time_period == "Max":
+        graph_time_period = "300y"
 
     portfolio_timeline = pd.DataFrame(columns = ["Date", "Close"])
     for i, row in input_data.iterrows():
@@ -79,7 +81,11 @@ if ticker_input.strip():
         ticker_timeline["Close"] = ticker_timeline["Close"] * row["No. Shares held"]
         portfolio_timeline["Close"] = portfolio_timeline["Close"] + ticker_timeline["Close"]
 
+    # Possible TODO: Show the value of each stock on the graph to show it's effect on portfolio value
+
     st.line_chart(portfolio_timeline, x="Date", y="Close")
+    st.markdown("**Note this chart assumes you've held all these shares the whole period, which is unlikely*")
+
 
 else:
     st.info("Please enter at least one ticker to get started")
