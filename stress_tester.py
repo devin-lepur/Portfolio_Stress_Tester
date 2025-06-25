@@ -8,6 +8,10 @@ st.title("Stock Portfolio Stress Tester")
 # Allow user to enter stock
 ticker_input = st.text_input("Enter the tickers of your holdings a list. Example: \"TSLA,AAPL,MSFT\"", key="ticker")
 
+# Remove extra info and prepare for ticker use
+ticker_input = ticker_input.replace(' ', '')
+ticker_input = ticker_input.upper()
+
 # If there is input, parse the data
 if ticker_input.strip():
     tickers = [t.strip().upper() for t in ticker_input.split(",") if t.strip()]
