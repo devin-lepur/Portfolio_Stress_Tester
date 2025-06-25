@@ -16,6 +16,8 @@ st.title("Stock Portfolio Stress Tester")
 # Allow user to enter stock
 ticker_input = st.text_input("Enter the tickers of your holdings a list. Example: \"TSLA,AAPL,MSFT\"", key="ticker")
 
+# TODO: Allow user to upload downloaded holdings from brokerage
+
 # Remove extra info and prepare for ticker use
 ticker_input = ticker_input.replace(' ', '')
 ticker_input = ticker_input.upper()
@@ -39,7 +41,7 @@ if ticker_input.strip():
         shares_held = row['No. Shares held']
 
         try:
-            data = yf.Ticker(ticker_symbol).history(period="1d", interval="1m")
+            data = yf.Ticker(ticker_symbol).history(period="1d", interval="1d")
             if data.empty:
                 st.warning(f"Unable to fetch data from Yahoo Finance for {ticker_symbol}.")
             
@@ -54,6 +56,30 @@ if ticker_input.strip():
             st.warning(f"Unable to fetch data for \"{ticker_symbol}\". Check to make sure you entered the tickers correctly.")
 
     st.markdown(f"#### Total Portfolio Value: ${round(total_value, 2):,}")
+
+
+
+    # Dynamic line graph of portfolio value over time
+    st.markdown("## Portfolio value over time")
+    # Drop down for time frame
+    graph_time_period = st.selectbox("Select time frame", options = ["1mo", "6mo", "1y", "5y", "10y", "100y"], index=2)
+
+    portfolio_timeline = pd.DataFrame(columns = ["Date", "Close"])
+    for i, row in input_data.iterrows():
+        # Pull ticker history
+        ticker_timeline = yf.Ticker(row["Tickers"]).history(period=graph_time_period, interval="1d")
+        ticker_timeline = ticker_timeline.reset_index()     # Remove index classification from Date column
+
+        # For first iteration set portfolio date column
+        if i == 0:
+            portfolio_timeline["Date"] = ticker_timeline["Date"]
+            portfolio_timeline["Close"] = 0.0
+        
+        # Adjust for shares held and add to portfolio
+        ticker_timeline["Close"] = ticker_timeline["Close"] * row["No. Shares held"]
+        portfolio_timeline["Close"] = portfolio_timeline["Close"] + ticker_timeline["Close"]
+
+    st.line_chart(portfolio_timeline, x="Date", y="Close")
 
 else:
     st.info("Please enter at least one ticker to get started")
