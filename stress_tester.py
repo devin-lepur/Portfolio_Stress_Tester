@@ -9,6 +9,9 @@ Date: June 21, 2025
 import streamlit as st
 import pandas as pd
 import yfinance as yf
+import matplotlib.pyplot as plt
+
+import data_manipulation as dm
 
 st.title("Stock Portfolio Stress Tester")
 
@@ -16,6 +19,8 @@ st.title("Stock Portfolio Stress Tester")
 ticker_input = st.text_input("Enter the tickers of your holdings a list. Example: \"TSLA, AAPL, MSFT\"", key="ticker")
 
 # TODO: Allow user to upload downloaded holdings from brokerage
+
+# TODO: Encapsulate pieces into functions into methods
 
 # Remove extra info and prepare for ticker use
 ticker_input = ticker_input.replace(' ', '')
@@ -33,6 +38,8 @@ if ticker_input.strip():
     st.markdown("## Estimated Current Value")
     st.write("(Based on last market close)")
 
+
+# TODO: Combine the two following for loops and just have the first loop pull from the selected data
 
     # For each row, get price and determine value of shares held
     for i, row in input_data.iterrows():
@@ -84,8 +91,22 @@ if ticker_input.strip():
     # Possible TODO: Show the value of each stock on the graph to show it's effect on portfolio value
 
     st.line_chart(portfolio_timeline, x="Date", y="Close")
-    st.markdown("**Note this chart assumes you've held all these shares the whole period, which is unlikely*")
+    st.markdown("**Note this chart assumes you've held all these shares the whole period*")
+
+
+    # Display histogram of daily returns
+    percent_returns = dm.get_percent_returns(data=portfolio_timeline)["Percent_return"]
+    
+    fig, ax = plt.subplots()
+    ax.hist(percent_returns, bins=30, edgecolor="black")
+    ax.set_title("Histogram of Daily Percent Returns")
+    ax.set_xlabel("Daily Percent Return (%)")
+    ax.set_ylabel("Frequency")
+
+    st.pyplot(fig)
 
 
 else:
     st.info("Please enter at least one ticker to get started")
+
+
