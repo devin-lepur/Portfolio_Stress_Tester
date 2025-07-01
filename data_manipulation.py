@@ -19,7 +19,8 @@ def get_percent_returns(data: pd.DataFrame) -> pd.DataFrame:
     """
 
 
-    # % return = (close value - previous close value) / previous close value * 100
+
+    # TODO: Account for dividing by 0 (Stock data not found/IPO/worthless stock)
     data["Percent_return"] = 0
 
     for i, row in data.iterrows():

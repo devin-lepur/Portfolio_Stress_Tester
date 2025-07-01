@@ -94,6 +94,7 @@ if ticker_input.strip():
     st.markdown("**Note this chart assumes you've held all these shares the whole period*")
 
 
+
     # Display histogram of daily returns
     percent_returns = dm.get_percent_returns(data=portfolio_timeline)["Percent_return"]
     
