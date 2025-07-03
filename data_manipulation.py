@@ -6,6 +6,7 @@ Date: June 30, 2025
 '''
 
 import pandas as pd
+import numpy as np
 
 def get_percent_returns(data: pd.DataFrame) -> pd.DataFrame:
     """
@@ -21,14 +22,7 @@ def get_percent_returns(data: pd.DataFrame) -> pd.DataFrame:
 
 
     # TODO: Account for dividing by 0 (Stock data not found/IPO/worthless stock)
-    data["Percent_return"] = 0
-
-    for i, row in data.iterrows():
-        if i == 0:      # Skip return for the oldest date
-            continue
-        curr_price = row["Close"]
-        prev_price = data["Close"].iloc[i-1]
-        
-        data.at[i, "Percent_return"] = (curr_price - prev_price) / prev_price * 100.0
+    data["Percent_return"] = data["Close"].pct_change()
 
     return data
+
