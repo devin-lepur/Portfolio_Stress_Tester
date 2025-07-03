@@ -110,6 +110,7 @@ if ticker_input.strip():
 
 
     # TODO: Allow user to select time frame for monte carlo display
+    # TODO: Only show Percentiles to bring down load times
     # Monte Carlo Graph Presentation
     monte_sim_results = sa.sim_monte_carlo(portfolio_timeline)
     st.line_chart(monte_sim_results)
