@@ -21,8 +21,6 @@ def get_percent_returns(data: pd.DataFrame) -> pd.DataFrame:
 
 
 
-    # TODO: Account for dividing by 0 (Stock data not found/IPO/worthless stock)
-    data["Percent_return"] = data["Close"].pct_change()
+    data["Percent_return"] = data["Close"].pct_change() * 100
 
     return data
-

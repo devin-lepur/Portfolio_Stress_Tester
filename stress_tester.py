@@ -12,6 +12,7 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 
 import data_manipulation as dm
+import simulation_algs as sa
 
 st.title("Stock Portfolio Stress Tester")
 
@@ -107,6 +108,8 @@ if ticker_input.strip():
 
     st.pyplot(fig)
 
+    monte_sim_results = sa.sim_monte_carlo(portfolio_timeline)
+    st.line_chart(monte_sim_results)
 
 else:
     st.info("Please enter at least one ticker to get started")
