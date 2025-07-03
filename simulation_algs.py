@@ -8,9 +8,6 @@ Date: June 24, 2025
 import numpy as np
 import pandas as pd
 
-# TODO: Value at Risk Estimator (VaR)
-
-
 # TODO: Historical crash simulation (Dot Com bubble, Housing Crisis, COVID-19)
 
 
