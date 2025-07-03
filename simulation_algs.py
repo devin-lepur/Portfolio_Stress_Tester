@@ -14,8 +14,7 @@ import pandas as pd
 # TODO: Historical crash simulation (Dot Com bubble, Housing Crisis, COVID-19)
 
 
-# TODO: Monte Carlo Simulation
-
+# TODO: allow for dynamic number of days simulated
 def sim_monte_carlo(data):
 
     NUM_SIMULATIONS = 50
