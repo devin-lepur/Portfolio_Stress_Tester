@@ -10,6 +10,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
+import numpy as np
 
 import data_manipulation as dm
 import simulation_algs as sa
@@ -92,28 +93,45 @@ if ticker_input.strip():
     # Possible TODO: Show the value of each stock on the graph to show it's effect on portfolio value
 
     st.line_chart(portfolio_timeline, x="Date", y="Close")
-    st.markdown("**Note this chart assumes you've held all these shares the whole period*")
 
 
     # TODO: Only show graph if valid selection
 
-    # Display histogram of daily returns
-    percent_returns = dm.get_percent_returns(data=portfolio_timeline)["Percent_return"]
+
+    try:
+        # Display histogram of daily returns
+        percent_returns = dm.get_percent_returns(data=portfolio_timeline)["Percent_return"]
+        
+        fig, ax = plt.subplots()
+        ax.hist(percent_returns, bins=30, edgecolor="black")
+        ax.set_title("Histogram of Daily Percent Returns")
+        ax.set_xlabel("Daily Percent Return (%)")
+        ax.set_ylabel("Frequency")
+
+        st.pyplot(fig)
+
+
+        # TODO: Allow user to select time frame for monte carlo display
+        # TODO: Only show Percentiles to bring down load times
+        # Monte Carlo Graph Presentation
+
+        monte_carlo_period = st.selectbox("Select time frame for Monte Carlo Simulation", options = ["1mo", "6mo", "1y", "5y", "10y", "20y", "40y"], index=2)
     
-    fig, ax = plt.subplots()
-    ax.hist(percent_returns, bins=30, edgecolor="black")
-    ax.set_title("Histogram of Daily Percent Returns")
-    ax.set_xlabel("Daily Percent Return (%)")
-    ax.set_ylabel("Frequency")
+        monte_sim_results = sa.sim_monte_carlo(portfolio_timeline, time_period=monte_carlo_period)
 
-    st.pyplot(fig)
+        percentiles_to_use = [5, 10, 25, 50, 75, 90, 95]
+        monte_percentiles_df = monte_sim_results.apply(lambda row: np.percentile(row, percentiles_to_use), axis=1)
 
+        # This gives a DataFrame of shape (NUM_DAYS, len(percentiles_to_use))
+        # Now convert it to a proper DataFrame with named columns
+        monte_percentiles_df = pd.DataFrame(
+            monte_percentiles_df.tolist(),
+            columns=[f"{p}th Pctl" for p in percentiles_to_use]
+        )
 
-    # TODO: Allow user to select time frame for monte carlo display
-    # TODO: Only show Percentiles to bring down load times
-    # Monte Carlo Graph Presentation
-    monte_sim_results = sa.sim_monte_carlo(portfolio_timeline)
-    st.line_chart(monte_sim_results)
+        st.line_chart(monte_percentiles_df)
+    except:
+        pass
 
 else:
     st.info("Please enter at least one ticker to get started")
