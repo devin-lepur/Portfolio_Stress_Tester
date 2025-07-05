@@ -18,7 +18,7 @@ import simulation_algs as sa
 st.title("Stock Portfolio Stress Tester")
 
 # Allow user to enter stock
-ticker_input = st.text_input("Enter the tickers of your holdings a list. Example: \"SPY, AAPL, MSFT\"", key="ticker")
+ticker_input = st.text_input("Enter the tickers of your holdings as list. Example: \"SPY, AAPL, MSFT\"", key="ticker")
 
 # TODO: Allow user to upload downloaded holdings from brokerage
 
